@@ -56,14 +56,14 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Reset
         markers.forEach(m => m.classList.remove('active'));
-        regionInfos.forEach(info => info.classList.remove('active'));
+        regionInfos.forEach(info => info.classList.remove('is-active'));
 
         // Activate
         const marker = document.querySelector(`.map-marker.${regionId}`);
         const info = document.getElementById(`info-${regionId}`);
         
         marker?.classList.add('active');
-        info?.classList.add('active');
+        info?.classList.add('is-active');
     };
 
     const startMapRotation = () => {
@@ -293,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initScientificParticles();
 
     // Mobile Interaction: Scroll to center & Tap toggle
-    const interactiveElementsSelector = '.capability-card, .scientific-card, .dashboard-card, .ecosystem-tgdg, .ecosystem-tglt, .ecosystem-digiwater, .why-card, .glass-card, .region-info, .process-step, .process-card, .group, .ecosystem-block';
+    const interactiveElementsSelector = '.capability-card, .scientific-card, .dashboard-card, .ecosystem-tgdg, .ecosystem-tglt, .ecosystem-digiwater, .why-card, .glass-card, .region-info, .process-step, .process-card, .group, .ecosystem-block, .ecosystem-card-mobile';
     const interactiveElements = document.querySelectorAll(interactiveElementsSelector);
     
     const handleMobileInteractions = () => {
@@ -304,7 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const viewportCenter = window.innerHeight / 2;
         const sections = new Set();
         
-        // Refresh elements in case of dynamic content (though not expected here)
+        // Refresh elements in case of dynamic content
         const currentElements = document.querySelectorAll(interactiveElementsSelector);
         
         currentElements.forEach(el => {
@@ -325,8 +325,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const elementCenter = rect.top + rect.height / 2;
                 const distance = Math.abs(viewportCenter - elementCenter);
 
-                // Relaxed condition: element center is close to viewport center
-                // or viewport center is within the element
                 const isOverlapping = rect.top < viewportCenter && rect.bottom > viewportCenter;
                 if (distance < minDistance && (isOverlapping || distance < window.innerHeight / 3)) {
                     minDistance = distance;
@@ -334,9 +332,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
+            // Identify active group if centered element belongs to one
+            const activeGroup = centeredElement?.dataset.group;
+
             sectionElements.forEach(el => {
                 if (el.dataset.manuallyToggled === 'true') return;
-                if (el === centeredElement) {
+                
+                const isInActiveGroup = activeGroup && el.dataset.group === activeGroup;
+                
+                if (el === centeredElement || isInActiveGroup) {
                     el.classList.add('is-active');
                 } else {
                     el.classList.remove('is-active');
@@ -352,17 +356,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const el = e.target.closest(interactiveElementsSelector);
         if (!el) return;
 
-        // If it's a link, we might still want to toggle before navigating, 
-        // but usually, a tap on a card should just toggle it.
-        const isManual = el.dataset.manuallyToggled === 'true';
-        if (isManual) {
-            el.dataset.manuallyToggled = 'false';
+        // Toggle state and mark as manually controlled
+        const isActive = el.classList.contains('is-active');
+        if (isActive) {
             el.classList.remove('is-active');
         } else {
-            el.dataset.manuallyToggled = 'true';
             el.classList.add('is-active');
         }
-        
+        el.dataset.manuallyToggled = 'true';
         handleMobileInteractions();
     });
 
