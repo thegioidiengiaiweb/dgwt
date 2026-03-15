@@ -380,6 +380,14 @@ header.scrolled .nav-link {
     @apply border-sky-400 shadow-xl;
 }
 
+.ecosystem-card-mobile.is-active:nth-child(1) {
+    @apply border-sky-400 shadow-[0_0_20px_rgba(14,165,233,0.15)];
+}
+
+.ecosystem-card-mobile.is-active:nth-child(2) {
+    @apply border-green-400 shadow-[0_0_20px_rgba(74,222,128,0.15)];
+}
+
 .group.is-active.scientific-card, 
 .group.is-active.capability-card,
 .group.is-active.dashboard-card {
@@ -388,6 +396,18 @@ header.scrolled .nav-link {
 
 .group.is-active.why-card {
     @apply !-translate-y-3;
+}
+
+.ecosystem-tgdg.is-active {
+    @apply border-sky-400 shadow-[0_0_30px_rgba(14,165,233,0.2)];
+}
+
+.ecosystem-tglt.is-active {
+    @apply border-green-400 shadow-[0_0_30px_rgba(74,222,128,0.2)];
+}
+
+.ecosystem-digiwater.is-active {
+    @apply scale-105 shadow-[0_0_40px_rgba(14,165,233,0.3)];
 }
 
 .group.is-active.hover\:border-sky-500,
